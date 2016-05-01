@@ -21,5 +21,14 @@ namespace Mvc.Models
             SalesERPDAL salesDal = new SalesERPDAL();
             return salesDal.Empleados.ToList();            
         }
+
+        public Employee SaveEmployee(Employee e)
+        {
+            SalesERPDAL salesDal = new SalesERPDAL();
+            salesDal.Empleados.Add(e);
+            salesDal.SaveChanges();
+            return e;
+        }
+
     }
 }
