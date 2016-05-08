@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mvc.DataAccessLayer;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
@@ -34,7 +35,9 @@ namespace Mvc
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
-
+            //Incluir lo siguiente si tira el error The model backing the 'SalesERPDAL' context has changed since
+            //the database was created. Consider using Code First Migrations to update the database
+            Database.SetInitializer(new DropCreateDatabaseIfModelChanges<SalesERPDAL>());
             // Usar LocalDB para Entity Framework de manera predeterminada
             Database.DefaultConnectionFactory = new SqlConnectionFactory(@"Data Source=(localdb)\v11.0; Integrated Security=True; MultipleActiveResultSets=True");
 

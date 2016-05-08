@@ -71,7 +71,12 @@ namespace Mvc.Controllers
             //y entonces, va a comparar el nombre del parámetro con cada elemento de
             //los datos de entrada (por POST o por Query String).
             //Cuando encuentra una coincidencia, asigna el dato entrante a un parámetro.
-            
+            //Si no encuentra, le asigna un valor por defecto, por ejemplo:
+            //0 para integer, NULL para String
+            //En caso de que pueda asignar la propiedad porque los datos no coinciden, lanza
+            //una excepción
+
+
             //Después de que el Model binder itera por cada propiedad de cada una de las
             //clases de los parámetros y compara cada nombre de las propiedades con cada key
             //el los datos de entrada. Cuando coinciden, asigna el dato entrante a un parámetro.
@@ -80,13 +85,32 @@ namespace Mvc.Controllers
             //preguntás por su value
             //Corrección! En realidad, son los botones Submit, son input, así que el 
             //Model Binder les asigna el valor ´que tengan, en este caso, el texto del botón
+            
+            //Model Binder, también actualiza el ModelState, el cual encapsula el estado del
+            //modelo. El mismo, tiene una propiedad llamada IsValid, la cual, determina si
+            //el modelo (en este caso el obj Employee) fue actualizado correctamente o no
+            //El Modelo no se actualiza si alguna de las validaciones del servidor falla.
+
+            //Por ejemplo: ModelState["FirstName"].Errors contiene todos los errores relacionados
+            //con el First Name
+
+            //En MVC, se usa DataAnnotations para llevar a cabo las validaciones del lado del servidor.
+
+            
             switch (BtnSubmit)
             {
                 case "Save Employee":
-                    EmployeeBusinessLayer empBal = new EmployeeBusinessLayer();
-                    empBal.SaveEmployee(e);
-                    return RedirectToAction("Index");
-                    //return Content(e.FirstName + "|" + e.LastName + "|" + e.Salary);
+                    if (ModelState.IsValid)
+                    {
+                        EmployeeBusinessLayer empBal = new EmployeeBusinessLayer();
+                        empBal.SaveEmployee(e);
+                        return RedirectToAction("Index");
+                        //return Content(e.FirstName + "|" + e.LastName + "|" + e.Salary);
+                    }
+                    else
+                    {
+                        return View("CreateEmployee");
+                    }
                 case "Cancel":
                     return RedirectToAction("Index");
                     //RedirectToAction realiza un nuevo Request al Action Method apuntado
